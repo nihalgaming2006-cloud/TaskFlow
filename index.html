@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+       
+
+        <!-- Main -->
+        <main class="main">
+
+            <!-- Header -->
+
+           <header>
+
+   <div class="header-text">
+    <h1>TaskFlow</h1>
+    <p class="tagline">Simple. Fast. Organized.</p>
+</div>
+
+    <button id="themeBtn">
+
+        <i class="fa-solid fa-moon"></i>
+
+    </button>
+
+</header>
+
+            <!-- Search -->
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-search"></i>
+
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Search tasks...">
+
+            </div>
+
+            <!-- Stats -->
+
+            <section class="stats">
+
+                <div class="card">
+
+                    <h3>Total</h3>
+
+                    <h2 id="totalTask">0</h2>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>Completed</h3>
+
+                    <h2 id="completedTask">0</h2>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>Pending</h3>
+
+                    <h2 id="pendingTask">0</h2>
+
+                </div>
+
+            </section>
+
+            <!-- Progress -->
+
+            <div class="progress">
+
+                <div id="progressBar"></div>
+
+            </div>
+
+            <!-- Add Task -->
+
+            <section class="add-task">
+
+                <input
+                    type="text"
+                    id="taskInput"
+                    placeholder="Enter task...">
+
+                <select id="priority">
+
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+
+                </select>
+
+                <input
+                    type="date"
+                    id="dueDate">
+
+                <button id="addBtn">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add
+
+                </button>
+
+            </section>
+
+            <!-- Filters -->
+
+            <div class="filters">
+
+                <button class="filter active" data-filter="all">
+
+                    All
+
+                </button>
+
+                <button class="filter" data-filter="pending">
+
+                    Pending
+
+                </button>
+
+                <button class="filter" data-filter="completed">
+
+                    Completed
+
+                </button>
+
+            </div>
+
+            <!-- Tasks -->
+
+            <div id="taskList"></div>
+
+        </main>
+
+    </div>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+
+</html>
