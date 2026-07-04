@@ -1,21 +1,11 @@
-import { db } from "./firebase.js";
-
-import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    updateDoc,
-    doc
-} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-
-// ======================
+// ===========================
 // ELEMENTS
-// ======================
+// ===========================
 
 const taskInput = document.getElementById("taskInput");
 const priority = document.getElementById("priority");
 const dueDate = document.getElementById("dueDate");
+
 const addBtn = document.getElementById("addBtn");
 
 const taskList = document.getElementById("taskList");
@@ -32,47 +22,33 @@ const progressBar = document.getElementById("progressBar");
 
 const themeBtn = document.getElementById("themeBtn");
 
-// ======================
+// ===========================
+// DATA
+// ===========================
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let currentFilter = "all";
 
-// ======================
-// LOAD TASKS
-// ======================
+// ===========================
+// SAVE TASKS
+// ===========================
 
-async function loadTasks() {
+function saveTasks(){
 
-    tasks = [];
-
-    const snapshot = await getDocs(collection(db, "tasks"));
-
-    snapshot.forEach((item) => {
-
-        tasks.push({
-
-            id: item.id,
-
-            ...item.data()
-
-        });
-
-    });
-
-    renderTasks();
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 
 }
 
-// ======================
-// STATS
-// ======================
+// ===========================
+// UPDATE STATS
+// ===========================
 
-function updateStats() {
+function updateStats(){
 
     const total = tasks.length;
 
-    const completed = tasks.filter(t => t.completed).length;
+    const completed = tasks.filter(task => task.completed).length;
 
     totalTask.textContent = total;
 
@@ -81,74 +57,66 @@ function updateStats() {
     pendingTask.textContent = total - completed;
 
     progressBar.style.width =
-
         total === 0
-
         ? "0%"
-
         : (completed / total) * 100 + "%";
 
 }
 
-// ======================
-// BADGE
-// ======================
+// ===========================
+// PRIORITY BADGE
+// ===========================
 
-function badge(priority) {
+function badge(priority){
 
-    switch (priority) {
+    switch(priority){
 
         case "High":
-
             return "high";
 
         case "Medium":
-
             return "medium";
 
         default:
-
             return "low";
 
     }
 
 }
 
-// ======================
-// RENDER
-// ======================
+// ===========================
+// RENDER TASKS
+// ===========================
 
-function renderTasks() {
+function renderTasks(){
 
     taskList.innerHTML = "";
 
-    let filtered = [...tasks];
+    let list = [...tasks];
 
-    // Search
+    // SEARCH
 
-    filtered = filtered.filter(task =>
-
-        task.title.toLowerCase()
-
+    list = list.filter(task =>
+        task.title
+        .toLowerCase()
         .includes(search.value.toLowerCase())
-
     );
 
-    // Filter
+    // FILTER
 
-    if (currentFilter === "completed") {
+    if(currentFilter === "completed"){
 
-        filtered = filtered.filter(t => t.completed);
-
-    }
-
-    if (currentFilter === "pending") {
-
-        filtered = filtered.filter(t => !t.completed);
+        list = list.filter(task => task.completed);
 
     }
 
-    if (filtered.length === 0) {
+    if(currentFilter === "pending"){
+
+        list = list.filter(task => !task.completed);
+
+    }
+
+    if(list.length === 0){
 
         taskList.innerHTML = `
 
@@ -158,7 +126,7 @@ function renderTasks() {
 
             <h2>No Tasks Found</h2>
 
-            <p>Add your first task.</p>
+            <p>Add your first task to get started.</p>
 
         </div>
 
@@ -170,23 +138,20 @@ function renderTasks() {
 
     }
 
-    filtered.forEach(task => {
+    list.forEach(task => {
 
-        const div = document.createElement("div");
+        const card = document.createElement("div");
 
-        div.className = `task ${task.completed ? "completed" : ""}`;
+        card.className = `task ${task.completed ? "completed" : ""}`;
 
-        div.innerHTML = `
+        card.innerHTML = `
 
         <div class="left">
 
             <input
-
             type="checkbox"
-
             ${task.completed ? "checked" : ""}
-
-            onchange="toggleTask('${task.id}')">
+            onchange="toggleTask(${task.id})">
 
             <div class="task-info">
 
@@ -211,22 +176,18 @@ function renderTasks() {
         <div class="actions">
 
             <button
-
             class="edit"
+            onclick="editTask(${task.id})">
 
-            onclick="editTask('${task.id}')">
-
-            <i class="fa-solid fa-pen"></i>
+                <i class="fa-solid fa-pen"></i>
 
             </button>
 
             <button
-
             class="delete"
+            onclick="deleteTask(${task.id})">
 
-            onclick="deleteTask('${task.id}')">
-
-            <i class="fa-solid fa-trash"></i>
+                <i class="fa-solid fa-trash"></i>
 
             </button>
 
@@ -234,121 +195,152 @@ function renderTasks() {
 
         `;
 
-        taskList.appendChild(div);
+        taskList.appendChild(card);
 
     });
 
     updateStats();
 
 }
-// ======================
+// ===========================
 // ADD TASK
-// ======================
+// ===========================
 
 addBtn.addEventListener("click", addTask);
 
-taskInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
+taskInput.addEventListener("keypress", function(e){
+
+    if(e.key === "Enter"){
+
         addTask();
+
     }
+
 });
 
-async function addTask() {
+function addTask(){
 
     const title = taskInput.value.trim();
 
-    if (!title) {
+    if(title === ""){
+
         alert("Please enter a task.");
+
         return;
+
     }
 
-    await addDoc(collection(db, "tasks"), {
+    const task = {
+
+        id: Date.now(),
+
         title: title,
+
         priority: priority.value,
+
         date: dueDate.value,
-        completed: false,
-        createdAt: Date.now()
-    });
+
+        completed: false
+
+    };
+
+    tasks.unshift(task);
+
+    saveTasks();
+
+    renderTasks();
 
     taskInput.value = "";
+
     dueDate.value = "";
+
     priority.value = "Medium";
 
-    await loadTasks();
 }
 
-// ======================
-// DELETE
-// ======================
+// ===========================
+// DELETE TASK
+// ===========================
 
-async function deleteTask(id) {
+function deleteTask(id){
 
-    if (!confirm("Delete this task?")) return;
+    if(!confirm("Delete this task?")) return;
 
-    await deleteDoc(doc(db, "tasks", id));
+    tasks = tasks.filter(task => task.id !== id);
 
-    await loadTasks();
+    saveTasks();
+
+    renderTasks();
+
 }
 
-// ======================
-// TOGGLE COMPLETE
-// ======================
+// ===========================
+// COMPLETE TASK
+// ===========================
 
-async function toggleTask(id) {
+function toggleTask(id){
 
-    const task = tasks.find(t => t.id === id);
+    tasks = tasks.map(task=>{
 
-    if (!task) return;
+        if(task.id === id){
 
-    await updateDoc(doc(db, "tasks", id), {
-        completed: !task.completed
+            task.completed = !task.completed;
+
+        }
+
+        return task;
+
     });
 
-    await loadTasks();
+    saveTasks();
+
+    renderTasks();
+
 }
 
-// ======================
-// EDIT
-// ======================
+// ===========================
+// EDIT TASK
+// ===========================
 
-async function editTask(id) {
+function editTask(id){
 
     const task = tasks.find(t => t.id === id);
 
-    if (!task) return;
+    if(!task) return;
 
     const value = prompt("Edit Task", task.title);
 
-    if (value === null) return;
+    if(value === null) return;
 
-    if (value.trim() === "") return;
+    if(value.trim() === "") return;
 
-    await updateDoc(doc(db, "tasks", id), {
-        title: value.trim()
-    });
+    task.title = value.trim();
 
-    await loadTasks();
+    saveTasks();
+
+    renderTasks();
+
 }
 
-// ======================
+// ===========================
 // SEARCH
-// ======================
+// ===========================
 
 search.addEventListener("input", renderTasks);
 
-// ======================
+// ===========================
 // FILTERS
-// ======================
+// ===========================
 
-filters.forEach(button => {
+filters.forEach(btn=>{
 
-    button.addEventListener("click", () => {
+    btn.addEventListener("click", ()=>{
 
-        filters.forEach(btn => btn.classList.remove("active"));
+        filters.forEach(button=>button.classList.remove("active"));
 
-        button.classList.add("active");
+        btn.classList.add("active");
 
-        currentFilter = button.dataset.filter;
+        currentFilter = btn.dataset.filter;
 
         renderTasks();
 
@@ -356,11 +348,11 @@ filters.forEach(button => {
 
 });
 
-// ======================
+// ===========================
 // DARK MODE
-// ======================
+// ===========================
 
-if (localStorage.getItem("theme") === "dark") {
+if(localStorage.getItem("theme") === "dark"){
 
     document.body.classList.add("dark");
 
@@ -368,19 +360,19 @@ if (localStorage.getItem("theme") === "dark") {
 
 }
 
-themeBtn.addEventListener("click", () => {
+themeBtn.addEventListener("click", ()=>{
 
     document.body.classList.toggle("dark");
 
-    if (document.body.classList.contains("dark")) {
+    if(document.body.classList.contains("dark")){
 
-        localStorage.setItem("theme", "dark");
+        localStorage.setItem("theme","dark");
 
         themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
 
-    } else {
+    }else{
 
-        localStorage.setItem("theme", "light");
+        localStorage.setItem("theme","light");
 
         themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
 
@@ -388,16 +380,16 @@ themeBtn.addEventListener("click", () => {
 
 });
 
-// ======================
-// MAKE FUNCTIONS GLOBAL
-// ======================
+// ===========================
+// GLOBAL FUNCTIONS
+// ===========================
 
 window.deleteTask = deleteTask;
 window.editTask = editTask;
 window.toggleTask = toggleTask;
 
-// ======================
-// START APP
-// ======================
+// ===========================
+// INITIAL LOAD
+// ===========================
 
-loadTasks();
+renderTasks(); 
