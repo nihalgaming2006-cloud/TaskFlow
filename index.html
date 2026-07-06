@@ -44,88 +44,67 @@
 
 </header>
 
-            <!-- Search -->
-
-            <div class="search-box">
-
-                <i class="fa-solid fa-search"></i>
-
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Search tasks...">
-
-            </div>
-
-            <!-- Stats -->
-
-            <section class="stats">
-
-                <div class="card">
-
-                    <h3>Total</h3>
-
-                    <h2 id="totalTask">0</h2>
-
-                </div>
-
-                <div class="card">
-
-                    <h3>Completed</h3>
-
-                    <h2 id="completedTask">0</h2>
-
-                </div>
-
-                <div class="card">
-
-                    <h3>Pending</h3>
-
-                    <h2 id="pendingTask">0</h2>
-
-                </div>
-
-            </section>
-
-            <!-- Progress -->
-
-            <div class="progress">
-
-                <div id="progressBar"></div>
-
-            </div>
-
             <!-- Add Task -->
+<section class="add-task">
 
-            <section class="add-task">
+    <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter task...">
 
-                <input
-                    type="text"
-                    id="taskInput"
-                    placeholder="Enter task...">
+    <select id="priority">
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+    </select>
 
-                <select id="priority">
+    <input
+        type="date"
+        id="dueDate">
 
-                    <option>High</option>
-                    <option>Medium</option>
-                    <option>Low</option>
+    <button id="addBtn">
+        <i class="fa-solid fa-plus"></i>
+        Add
+    </button>
 
-                </select>
+</section>
 
-                <input
-                    type="date"
-                    id="dueDate">
+<!-- Search -->
+<div class="search-box">
 
-                <button id="addBtn">
+    <i class="fa-solid fa-search"></i>
 
-                    <i class="fa-solid fa-plus"></i>
+    <input
+        type="text"
+        id="search"
+        placeholder="Search tasks...">
 
-                    Add
+</div>
 
-                </button>
+<!-- Stats -->
+<section class="stats">
 
-            </section>
+    <div class="card">
+        <h3>Total</h3>
+        <h2 id="totalTask">0</h2>
+    </div>
 
+    <div class="card">
+        <h3>Completed</h3>
+        <h2 id="completedTask">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Pending</h3>
+        <h2 id="pendingTask">0</h2>
+    </div>
+
+</section>
+
+<!-- Progress -->
+<div class="progress">
+    <div id="progressBar"></div>
+</div>
             <!-- Filters -->
 
             <div class="filters">

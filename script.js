@@ -44,25 +44,21 @@ function saveTasks(){
 // UPDATE STATS
 // ===========================
 
-function updateStats(){
+function updateStats() {
 
     const total = tasks.length;
-
     const completed = tasks.filter(task => task.completed).length;
+    const pending = total - completed;
 
     totalTask.textContent = total;
-
     completedTask.textContent = completed;
-
-    pendingTask.textContent = total - completed;
+    pendingTask.textContent = pending;
 
     progressBar.style.width =
         total === 0
-        ? "0%"
-        : (completed / total) * 100 + "%";
-
+            ? "0%"
+            : (completed / total) * 100 + "%";
 }
-
 // ===========================
 // PRIORITY BADGE
 // ===========================
