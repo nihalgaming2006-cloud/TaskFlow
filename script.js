@@ -3,8 +3,9 @@
 // ===========================
 
 const taskInput = document.getElementById("taskInput");
-const priority = document.getElementById("priority");
+
 const dueDate = document.getElementById("dueDate");
+const dueTime = document.getElementById("dueTime");
 
 const addBtn = document.getElementById("addBtn");
 
@@ -63,22 +64,7 @@ function updateStats() {
 // PRIORITY BADGE
 // ===========================
 
-function badge(priority){
 
-    switch(priority){
-
-        case "High":
-            return "high";
-
-        case "Medium":
-            return "medium";
-
-        default:
-            return "low";
-
-    }
-
-}
 
 // ===========================
 // RENDER TASKS
@@ -153,17 +139,11 @@ function renderTasks(){
 
                 <h3>${task.title}</h3>
 
-                <p>
-
-                    <span class="badge ${badge(task.priority)}">
-
-                        ${task.priority}
-
-                    </span>
-
-                    📅 ${task.date || "No Date"}
-
-                </p>
+               <p>
+    📅 ${task.date || "No Date"}
+    &nbsp;&nbsp;
+    🕒 ${task.time || "No Time"}
+</p>
 
             </div>
 
@@ -226,20 +206,16 @@ function addTask(){
 
     }
 
-    const task = {
+   const task = {
 
-        id: Date.now(),
+    id: Date.now(),
+    title: title,
+   
+    date: dueDate.value,
+    time: dueTime.value,
+    completed: false
 
-        title: title,
-
-        priority: priority.value,
-
-        date: dueDate.value,
-
-        completed: false
-
-    };
-
+};
     tasks.unshift(task);
 
     saveTasks();
@@ -249,8 +225,8 @@ function addTask(){
     taskInput.value = "";
 
     dueDate.value = "";
+dueTime.value = "";
 
-    priority.value = "Medium";
 
 }
 
