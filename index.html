@@ -43,8 +43,7 @@
     </button>
 
 </header>
-
-            <!-- Add Task -->
+<!-- Add Task -->
 <section class="add-task">
 
     <input
@@ -52,28 +51,34 @@
         id="taskInput"
         placeholder="Enter task...">
 
-    <input type="date" id="dueDate">
+    <!-- Date -->
+    <div class="input-box">
+        <i class="fa-solid fa-calendar-days"></i>
+        <input type="date" id="dueDate">
+    </div>
 
-<input
-    type="time"
-    id="dueTime">
+    <!-- Time -->
+    <div class="input-box">
+        <i class="fa-solid fa-clock"></i>
+        <input type="time" id="dueTime">
+    </div>
 
+    <!-- Reminder -->
+    <select id="reminder">
+        <option value="0">No Reminder</option>
+        <option value="1">1 Minute Before</option>
+        <option value="2">2 Minutes Before</option>
+        <option value="5" selected>5 Minutes Before</option>
+        <option value="15">15 Minutes Before</option>
+    </select>
+
+    <!-- Add Button -->
     <button id="addBtn">
         <i class="fa-solid fa-plus"></i>
         Add
     </button>
 
 </section>
-<select id="reminder">
-    <option value="0">No Reminder</option>
-    <option value="1">1 Minute Before</option>
-    <option value="5">5 Minutes Before</option>
-    <option value="10">10 Minutes Before</option>
-    <option value="15">15 Minutes Before</option>
-    <option value="30">30 Minutes Before</option>
-    <option value="60">1 Hour Before</option>
-    <option value="1440">1 Day Before</option>
-</select>
 <!-- Search -->
 <div class="search-box">
 
