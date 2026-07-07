@@ -1,7 +1,7 @@
 // ===========================
 // ELEMENTS
 // ===========================
-
+const reminder = document.getElementById("reminder");
 const taskInput = document.getElementById("taskInput");
 
 const dueDate = document.getElementById("dueDate");
@@ -63,7 +63,10 @@ function updateStats() {
 // ===========================
 // PRIORITY BADGE
 // ===========================
-
+// Request notification permission
+if ("Notification" in window) {
+    Notification.requestPermission();
+}
 
 
 // ===========================
@@ -138,11 +141,14 @@ function renderTasks(){
             <div class="task-info">
 
                 <h3>${task.title}</h3>
-
-               <p>
+<p>
     📅 ${task.date || "No Date"}
     &nbsp;&nbsp;
     🕒 ${task.time || "No Time"}
+
+    <br>
+
+    🔔 ${task.reminder || 5} min before
 </p>
 
             </div>
@@ -193,41 +199,36 @@ taskInput.addEventListener("keypress", function(e){
     }
 
 });
-
-function addTask(){
+function addTask() {
 
     const title = taskInput.value.trim();
 
-    if(title === ""){
-
+    if (title === "") {
         alert("Please enter a task.");
-
         return;
-
     }
 
-   const task = {
-
+    const task = {
     id: Date.now(),
     title: title,
-   
     date: dueDate.value,
     time: dueTime.value,
-    completed: false
-
+    reminder: Number(reminder.value),
+    completed: false,
+    notified: false
 };
+
     tasks.unshift(task);
 
     saveTasks();
 
     renderTasks();
 
+    // Clear inputs
     taskInput.value = "";
-
     dueDate.value = "";
-dueTime.value = "";
-
-
+    dueTime.value = "";
+    reminder.value = "5";   // ← Add it here
 }
 
 // ===========================
@@ -364,4 +365,49 @@ window.toggleTask = toggleTask;
 // INITIAL LOAD
 // ===========================
 
+
+function showNotification(task) {
+
+    if (Notification.permission === "granted") {
+
+        new Notification("⏰ Task Reminder", {
+            body: `"${task.title}" is due soon!`,
+            icon: "https://cdn-icons-png.flaticon.com/512/9068/9068753.png"
+        });
+
+    }
+
+}
+function checkDeadlines() {
+
+    const now = new Date();
+
+    tasks.forEach(task => {
+
+        if (task.completed) return;
+
+        if (!task.date || !task.time) return;
+
+        const deadline = new Date(`${task.date}T${task.time}`);
+
+        const diff = deadline - now;
+
+        // Notify 10 minutes before deadline
+        const reminderTime = (task.reminder || 5) * 60 * 1000;
+
+if (diff > 0 && diff <= reminderTime && !task.notified) {
+
+            showNotification(task);
+
+            task.notified = true;
+
+            saveTasks();
+
+        }
+
+    });
+
+}
 renderTasks(); 
+checkDeadlines();
+setInterval(checkDeadlines, 60000); // Check every minute
