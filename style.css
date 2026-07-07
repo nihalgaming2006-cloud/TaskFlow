@@ -787,3 +787,46 @@ RESPONSIVE
     }
 
 }
+/* ===========================
+   Ripple Effect
+=========================== */
+
+button{
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple{
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-effect 0.6s linear;
+    background: rgba(255,255,255,0.6);
+    pointer-events: none;
+}
+
+@keyframes ripple-effect{
+
+    to{
+        transform: scale(4);
+        opacity: 0;
+    }
+
+}
+/* ===========================
+   Delete Animation
+=========================== */
+
+.task{
+    transition: all 0.35s ease;
+}
+
+.task.deleting{
+    transform: translateX(-100%);
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}

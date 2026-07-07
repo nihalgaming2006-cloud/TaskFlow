@@ -239,14 +239,32 @@ function deleteTask(id){
 
     if(!confirm("Delete this task?")) return;
 
-    tasks = tasks.filter(task => task.id !== id);
+    const cards = document.querySelectorAll(".task");
 
-    saveTasks();
+    cards.forEach(card => {
 
-    renderTasks();
+        const deleteBtn = card.querySelector(".delete");
+
+        if(deleteBtn &&
+           deleteBtn.getAttribute("onclick") === `deleteTask(${id})`){
+
+            card.classList.add("deleting");
+
+            setTimeout(() => {
+
+                tasks = tasks.filter(task => task.id !== id);
+
+                saveTasks();
+
+                renderTasks();
+
+            }, 350);
+
+        }
+
+    });
 
 }
-
 // ===========================
 // COMPLETE TASK
 // ===========================
@@ -423,3 +441,36 @@ function closePopup(){
 }
 
 window.closePopup = closePopup;
+// ===========================
+// Ripple Effect
+// ===========================
+
+document.querySelectorAll("button").forEach(button => {
+
+    button.addEventListener("click", function(e){
+
+        const ripple = document.createElement("span");
+
+        const rect = this.getBoundingClientRect();
+
+        const size = Math.max(rect.width, rect.height);
+
+        ripple.style.width = ripple.style.height = size + "px";
+
+        ripple.style.left =
+            e.clientX - rect.left - size / 2 + "px";
+
+        ripple.style.top =
+            e.clientY - rect.top - size / 2 + "px";
+
+        ripple.classList.add("ripple");
+
+        this.appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+
+    });
+
+});
