@@ -260,6 +260,9 @@ function toggleTask(id){
             task.completed = !task.completed;
 
         }
+        if(task.completed){
+    showPopup();
+}
 
         return task;
 
@@ -411,3 +414,12 @@ if (diff > 0 && diff <= reminderTime && !task.notified) {
 renderTasks(); 
 checkDeadlines();
 setInterval(checkDeadlines, 60000); // Check every minute
+function showPopup(){
+    document.getElementById("popup").classList.add("active");
+}
+
+function closePopup(){
+    document.getElementById("popup").classList.remove("active");
+}
+
+window.closePopup = closePopup;
